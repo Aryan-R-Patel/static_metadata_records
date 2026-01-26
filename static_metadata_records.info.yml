@@ -1,0 +1,6 @@
+name: Static Metadata Records
+type: module
+description: Custom module for Static Metadata Records
+package: Custom
+version: 1.0
+core_version_requirement: ^10

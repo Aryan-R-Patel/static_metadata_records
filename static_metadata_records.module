@@ -1,0 +1,47 @@
+<?php
+/**
+ * @file
+ * Hooks for the Static Metadata Records Module
+ */
+
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_update()
+ * - Adds the updated node id to the queue if the node type is "islandora_object"
+ */
+function static_metadata_records_node_update(NodeInterface $node){
+    // check if the node is already saved in the queue to avoid infinite loop
+    if ($node->save_flag){
+        return;
+    }
+
+    if ($node->getType() == "islandora_object") {
+        static_metadata_records_enqueue($node);    
+    }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert()
+ * - Adds the new node id to the queue if the node type is "islandora_object"
+ */
+function static_metadata_records_node_insert(NodeInterface $node) {  
+    if ($node->getType() == "islandora_object") {
+        static_metadata_records_enqueue($node);    
+    }
+}
+
+/**
+ * Helper function to add a node to the queue
+ * * @param \Drupal\node\NodeInterface $node
+ * The node to be queued
+ */
+function static_metadata_records_enqueue(NodeInterface $node){
+    $queueFactory = \Drupal::service('queue');
+    $queue = $queueFactory->get('static_metadata_records_queue');    
+    $item = new \stdClass();
+    $item->nid = $node->id();
+    $item->uid = \Drupal::currentUser()->id();
+    $queue->createItem($item);
+}
+?>

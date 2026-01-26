@@ -1,0 +1,7 @@
+static_metadata_records.metadata_config_form:
+  path: '/admin/config/system/metadata-config-form'
+  defaults:
+    _title: 'Metadata Config Form'
+    _form: 'Drupal\static_metadata_records\Form\MetadataConfigForm'
+  requirements:
+    _permission: 'administer site configuration'
