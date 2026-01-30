@@ -74,14 +74,19 @@ class MetadataRecordsCommands extends DrushCommands {
                 \Drupal::logger('static_metadata_records')->error("Invalid node ID '$nid'. Node ID must be numeric.");
                 continue;
             }
-            else{
-                // create an item in the queue with the uid and nid
-                $item = new \stdClass();
-                $item->nid = $nid;
-                $item->uid = $uid;
-                $queue->createItem($item);
-                \Drupal::logger('static_metadata_records')->info("Node ID $nid successfully added to the queue.");
+
+            // filter check
+            if (static_metadata_records_exclude_node($nid)) {
+                \Drupal::logger('static_metadata_records')->error("Skipping node $nid: Matches exclusion filters.");
+                continue;
             }
+            
+            // create an item in the queue with the uid and nid
+            $item = new \stdClass();
+            $item->nid = $nid;
+            $item->uid = $uid;
+            $queue->createItem($item);
+            \Drupal::logger('static_metadata_records')->info("Node ID $nid successfully added to the queue.");
         }
 
         fclose($handle);

@@ -1,8 +1,24 @@
-# Schema for the configuration files of the Static Metadata Records module.
 static_metadata_records.settings:
   type: config_object
   label: 'Static Metadata Records settings'
   mapping:
-    example:
+    enable_hooks:
+      type: boolean
+      label: 'Enable Hooks'
+    dc_field_selection:
       type: string
-      label: 'Example'
+      label: 'DC Destination Field'
+    mods_field_selection:
+      type: string
+      label: 'MODS Destination Field'
+    excluded_content_types:
+      type: sequence
+      label: 'Excluded Content Types'
+      sequence:
+        type: string
+    excluded_field_machine_name:
+      type: string
+      label: 'Excluded Field Machine Name'
+    excluded_field_value:
+      type: string
+      label: 'Excluded Field Value'

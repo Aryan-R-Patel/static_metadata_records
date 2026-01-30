@@ -1,0 +1,6 @@
+enable_hooks: false
+dc_field_selection: ''
+mods_field_selection: ''
+excluded_content_types: []
+excluded_field_machine_name: ''
+excluded_field_value: ''
