@@ -8,12 +8,13 @@ use Drupal\node\NodeInterface;
 use Drupal\node\Entity\Node;
 
 /**
- * Global helper to check if a node should be skipped.
+ * Global helper function to check if a node should be skipped.
  */
 function static_metadata_records_exclude_node($nid) {
     $node = Node::load($nid);
     if (!$node) return TRUE;
 
+    // get all the settings from the custom module's config form
     $config = \Drupal::config('static_metadata_records.settings');
     $excluded_content_types = array_filter($config->get('excluded_content_types') ?: []);
     $excluded_field_machine_name = $config->get('excluded_field_machine_name');
@@ -21,11 +22,11 @@ function static_metadata_records_exclude_node($nid) {
 
     if (in_array($node->bundle(), $excluded_content_types)) {
         if (!empty($excluded_field_machine_name) && $node->hasField($excluded_field_machine_name)) {        
-            
             $field = $node->get($excluded_field_machine_name);
             $field_definition = $field->getFieldDefinition();
             $found_match = FALSE;
     
+            // handle reference types and regular types differently
             if ($field_definition->getType() === 'entity_reference') {
                 $referenced_entities = $field->referencedEntities();
                 if (!empty($referenced_entities)) {
