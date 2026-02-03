@@ -14,8 +14,19 @@ class MODSExtractor implements MetadataExtractorInterface{
      */
     public function getData($nid, array $headers){
         $client = new Client();
-        $url = "https://islandora.dev/oai/request?identifier=oai%3Aislandora.dev%3Anode-$nid&metadataPrefix=mods&verb=GetRecord";
-        // $xmlSchema = "https://www.loc.gov/standards/mods/v3/mods-3-8.xsd";
+        // $url = "https://islandora.dev/oai/request?identifier=oai%3Aislandora.dev%3Anode-$nid&metadataPrefix=mods&verb=GetRecord";
+        // // $xmlSchema = "https://www.loc.gov/standards/mods/v3/mods-3-8.xsd";
+
+        // Dynamically construct the OAI-PMH URL and identifier based on the current site.
+        $host = \Drupal::request()->getHttpHost();
+        // Remove port from hostname if present.
+        if (strpos($host, ':') !== FALSE) {
+            $host_parts = explode(':', $host);
+            $host = $host_parts[0];
+        }
+        // $scheme = \Drupal::request()->getScheme();
+        $scheme = "https";
+        $url = $scheme . '://' . $host . '/oai/request?identifier=oai%3A' . urlencode($host) . '%3Anode-' . $nid . '&metadataPrefix=mods&verb=GetRecord';
 
         try {
             // send request
@@ -37,7 +48,7 @@ class MODSExtractor implements MetadataExtractorInterface{
 
             $body = (string) $response->getBody();
 
-            return parseBody($body);
+            return $this->parseBody($body);
             // // validate the body and xml
             // if (empty($body)) {
             //     \Drupal::logger('static_metadata_records')->error("Empty response body for node $nid.");
