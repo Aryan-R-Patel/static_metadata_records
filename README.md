@@ -30,6 +30,8 @@ Go to the terminal of your Drupal Container in Docker and execute the following 
 
 2. **Hooks**: \
 If the checkbox is enabled in the configuration form, then no further setup is required.
+> **Note**: Hooks only trigger for nodes of content type 'islandora_object' (Repository Item). They do not apply to other content types like 'Article'.
+
 
 After the nodes are added to the queue, simply execute the queue by executing the following command:
 ```drush queue:run static_metadata_records_queue```.
