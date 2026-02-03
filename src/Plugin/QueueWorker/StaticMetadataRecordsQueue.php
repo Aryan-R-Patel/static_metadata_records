@@ -45,7 +45,7 @@ class StaticMetadataRecordsQueue extends QueueWorkerBase {
             \Drupal::logger('static_metadata_records')->error("User is blocked with uid $uid.");
             return;
         }
-
+        
         // switch accounts
         $account_switcher = \Drupal::service("account_switcher");
         if (!$account_switcher) {

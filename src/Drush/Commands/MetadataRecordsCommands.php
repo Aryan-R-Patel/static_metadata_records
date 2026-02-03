@@ -18,26 +18,26 @@ class MetadataRecordsCommands extends DrushCommands {
         // validate uid
         $uid = $options["uid"];
         if (empty($uid)) {
-            \Drupal::logger('static_metadata_records')->error(">You must provide a user ID using the --uid option.");
+            \Drupal::logger('static_metadata_records')->error("You must provide a user ID using the --uid option.");
             return;
         }
         if (!is_numeric($uid)){
-            \Drupal::logger('static_metadata_records')->error(">You must provide a numeric value for the uid.");
+            \Drupal::logger('static_metadata_records')->error("You must provide a numeric value for the uid.");
             return;
         }
 
         // validate file
         $file_path = $options["file"];
         if (empty($file_path)) {
-            \Drupal::logger('static_metadata_records')->error(">You must provide a file path using the --file option.");
+            \Drupal::logger('static_metadata_records')->error("You must provide a file path using the --file option.");
             return;
         }
         if (!file_exists($file_path)) {
-            \Drupal::logger('static_metadata_records')->error(">File not found: $file_path.");
+            \Drupal::logger('static_metadata_records')->error("File not found: $file_path. Please provide a full file path.");
             return;
         }
         if (!is_readable($file_path)) {
-            \Drupal::logger('static_metadata_records')->error(">File is not readable: $file_path.");
+            \Drupal::logger('static_metadata_records')->error("File is not readable: $file_path.");
             return;
         }
         // file extension
@@ -57,7 +57,9 @@ class MetadataRecordsCommands extends DrushCommands {
         // intialize a drupal queue
         $queueFactory = \Drupal::service('queue');
         $queue = $queueFactory->get('static_metadata_records_queue');        
-                    
+              
+        $count = 0;
+
         // read the csv file and add the data to the queue
         while (($data = fgetcsv($handle)) !== FALSE) {
             // check whether current line has data
@@ -86,9 +88,11 @@ class MetadataRecordsCommands extends DrushCommands {
             $item->nid = $nid;
             $item->uid = $uid;
             $queue->createItem($item);
+            $count++;
             \Drupal::logger('static_metadata_records')->info("Node ID $nid successfully added to the queue.");
         }
-
+        
+        \Drupal::logger('static_metadata_records')->info("Successfully added $count nodes to the queue.");
         fclose($handle);
     }
 }
