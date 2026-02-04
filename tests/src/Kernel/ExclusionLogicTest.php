@@ -41,6 +41,7 @@ class ExclusionLogicTest extends KernelTestBase {
     include_once __DIR__ . '/../../../static_metadata_records.module';
     
     $is_excluded = static_metadata_records_exclude_node($node->id());
-    $this->assertFalse($is_excluded);
+    $this->assertTrue($is_excluded); // changed to True because before we used to add to queue if there was no name/value given.
+    // but not we dont add to queue
   }
 }
