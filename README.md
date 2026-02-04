@@ -29,7 +29,7 @@ To populate the fields with plain text DC and MODS records, the nodes first need
 Go to the terminal of your Drupal Container in Docker and execute the following command: ```drush metadata-records:metadataRecords --file=full/path/to/csv --uid=USERID``` by replacing the *--file* and *--uid* options with your actual file paths and user ID's.
 
 2. **Hooks**: \
-If the checkbox is enabled in the configuration form, then no further setup is required.
+In your Drupal site, whenever you create/update a node, if the hooks checkbox is enabled in the configuration form, then no further setup is required. Clicking 'Save' will automatically add the node to the queue using the hooks.
 > **Note**: Hooks only trigger for nodes of content type 'islandora_object' (Repository Item). They do not apply to other content types like 'Article'.
 
 
@@ -37,3 +37,7 @@ After the nodes are added to the queue, simply execute the queue by executing th
 ```drush queue:run static_metadata_records_queue```.
 
 The nodes should be processed and you should be able to see the destination fields populated with the relevant DC and MODS records.
+
+# Additional Helpful Commands
+1. Check how many items in your queue: ```drush queue:list```
+2. Delete the queue: ```drush queue:delete static_metadata_records_queue```
