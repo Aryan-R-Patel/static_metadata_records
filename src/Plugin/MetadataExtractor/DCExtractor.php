@@ -96,17 +96,29 @@ class DCExtractor implements MetadataExtractorInterface {
         $refined = substr($body, $start_index + $tag_length, $length - $tag_length);  
 
         // schema validation
-        // $xmlSchema = "https://www.dublincore.org/schemas/xmls/simpledc20021212.xsd";
-        // $dom = new \DOMDocument();
-        // if ($dom->loadXML($refined)) {
-        //     if ($dom->schemaValidate($xmlSchema)) {
-        //         \Drupal::logger('static_metadata_records')->info("DC Schema validated.");
-        //     } else {
-        //         \Drupal::logger('static_metadata_records')->error("DC Schema validation failed.");
-        //     }
-        // } else {
-        //     \Drupal::logger('static_metadata_records')->error("Failed to load DC XML for validation.");
-        // }
+        $xmlSchema = "https://www.dublincore.org/schemas/xmls/simpledc20021212.xsd";
+        $dom = new \DOMDocument();
+        if ($dom->loadXML($refined)) {
+            libxml_use_internal_errors(true);
+            if ($dom->schemaValidate($xmlSchema)) {
+                \Drupal::logger('static_metadata_records')->info("DC Schema validated.");
+            } 
+            else {
+                $errors = libxml_get_errors();
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        \Drupal::logger('static_metadata_records')->error("DC Schema validation error: " . $error->message);
+                    }
+                    libxml_clear_errors();
+                } 
+                else {
+                    \Drupal::logger('static_metadata_records')->error("DC Schema validation failed.");
+                }
+            }
+        } 
+        else {
+            \Drupal::logger('static_metadata_records')->error("Failed to load DC XML for validation.");
+        }
 
         return $refined;
     }

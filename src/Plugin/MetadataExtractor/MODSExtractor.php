@@ -94,17 +94,29 @@ class MODSExtractor implements MetadataExtractorInterface{
         $refined = substr($body, $start_index + $tag_length, $length - $tag_length); 
 
         // schema validation
-        // $xmlSchema = "https://www.loc.gov/standards/mods/v3/mods-3-8.xsd";
-        // $dom = new \DOMDocument();
-        // if ($dom->loadXML($refined)) {
-        //     if ($dom->schemaValidate($xmlSchema)) {
-        //         \Drupal::logger('static_metadata_records')->info("MODS Schema validated.");
-        //     } else {
-        //         \Drupal::logger('static_metadata_records')->error("MODS Schema validation failed.");
-        //     }
-        // } else {
-        //     \Drupal::logger('static_metadata_records')->error("Failed to load MODS XML for validation.");
-        // }
+        $xmlSchema = "https://www.loc.gov/standards/mods/v3/mods-3-8.xsd";
+        $dom = new \DOMDocument();
+        if ($dom->loadXML($refined)) {
+            libxml_use_internal_errors(true);
+            if ($dom->schemaValidate($xmlSchema)) {
+                \Drupal::logger('static_metadata_records')->info("MODS Schema validated.");
+            } 
+            else {
+                $errors = libxml_get_errors();
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        \Drupal::logger('static_metadata_records')->error("MODS Schema validation error: " . $error->message);
+                    }
+                    libxml_clear_errors();
+                } 
+                else {
+                    \Drupal::logger('static_metadata_records')->error("MODS Schema validation failed.");
+                }
+            }
+        } 
+        else {
+            \Drupal::logger('static_metadata_records')->error("Failed to load MODS XML for validation.");
+        }
         
         return $refined;
     }
