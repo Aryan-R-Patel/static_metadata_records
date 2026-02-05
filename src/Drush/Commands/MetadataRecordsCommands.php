@@ -79,7 +79,7 @@ class MetadataRecordsCommands extends DrushCommands {
 
             // filter check
             if (static_metadata_records_exclude_node($nid)) {
-                \Drupal::logger('static_metadata_records')->error("Skipping node $nid: Matches exclusion filters.");
+                \Drupal::logger('static_metadata_records')->error("Node $nid skipped.");
                 continue;
             }
             

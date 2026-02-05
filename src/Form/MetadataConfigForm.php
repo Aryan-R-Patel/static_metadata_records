@@ -102,7 +102,7 @@ final class MetadataConfigForm extends ConfigFormBase {
         $form['excluded_field_value'] = [
             '#type' => 'textfield',
             '#title' => $this->t('Field Value'),
-            '#description' => $this->t('XML Records will NOT be generated if this value is found in the field above.'),
+            '#description' => $this->t('XML Records will NOT be generated if this value is found in the field above. (e.g. Collection)'),
             '#default_value' => $config->get('excluded_field_value'),
         ];
 

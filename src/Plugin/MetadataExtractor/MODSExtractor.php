@@ -49,37 +49,6 @@ class MODSExtractor implements MetadataExtractorInterface{
             $body = (string) $response->getBody();
 
             return $this->parseBody($body);
-            // // validate the body and xml
-            // if (empty($body)) {
-            //     \Drupal::logger('static_metadata_records')->error("Empty response body for node $nid.");
-            //     return null;
-            // }
-
-            // if (strpos($body, '<?xml') === false || strpos($body, '<OAI-PMH') === false) {
-            //     \Drupal::logger('static_metadata_records')->error("Response body does not appear to be XML for node $nid.");
-            //     return null;
-            // }
-            // if (simplexml_load_string($body) === false) {
-            //     \Drupal::logger('static_metadata_records')->error("Invalid XML for node $nid.");
-            //     return null;
-            // }
-
-            // // get the content between the metadata tags
-            // $start_tag = "<metadata>";
-            // $end_tag = "</metadata>";
-            // $tag_length = 10; // 10 is the length of <metadata>, and we dont want to display it
-            // $start_index = strpos($body, $start_tag);
-            // $end_index = strpos($body, $end_tag);
-            
-            // if (!$start_index || !$end_index){
-            //     \Drupal::logger('static_metadata_records')->error("Start or ending index not found XML for node $nid.");
-            //     return null;
-            // }    
-
-            // $length = $end_index - $start_index;
-            // $refined = substr($body, $start_index + $tag_length, $length - $tag_length); 
-
-            // return $refined;
         } 
         catch (Exception $e) {
             \Drupal::logger('static_metadata_records')->error("Exception in MODS Records for node $nid. \nError: $e->getMessage().");
@@ -98,11 +67,17 @@ class MODSExtractor implements MetadataExtractorInterface{
             // \Drupal::logger('static_metadata_records')->error("Response body does not appear to be XML for Node ID $nid.");
             return NULL;
         }
+
+        libxml_use_internal_errors(true); // disable libxml errors and allow the user to fetch error information as needed
         if (simplexml_load_string($body) === false) {
             // \Drupal::logger('static_metadata_records')->error("Invalid XML for node $nid.");
             return NULL;
         }
-
+        if (!empty(libxml_get_errors())){
+            libxml_clear_errors();
+            return NULL;
+        }
+ 
         // get the content between the metadata tags
         $start_tag = "<metadata>";
         $end_tag = "</metadata>";
@@ -117,6 +92,19 @@ class MODSExtractor implements MetadataExtractorInterface{
 
         $length = $end_index - $start_index;
         $refined = substr($body, $start_index + $tag_length, $length - $tag_length); 
+
+        // schema validation
+        // $xmlSchema = "https://www.loc.gov/standards/mods/v3/mods-3-8.xsd";
+        // $dom = new \DOMDocument();
+        // if ($dom->loadXML($refined)) {
+        //     if ($dom->schemaValidate($xmlSchema)) {
+        //         \Drupal::logger('static_metadata_records')->info("MODS Schema validated.");
+        //     } else {
+        //         \Drupal::logger('static_metadata_records')->error("MODS Schema validation failed.");
+        //     }
+        // } else {
+        //     \Drupal::logger('static_metadata_records')->error("Failed to load MODS XML for validation.");
+        // }
         
         return $refined;
     }

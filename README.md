@@ -38,6 +38,6 @@ After the nodes are added to the queue, simply execute the queue by executing th
 
 The nodes should be processed and you should be able to see the destination fields populated with the relevant DC and MODS records.
 
-# Additional Helpful Commands
+## Additional Helpful Commands
 1. Check how many items in your queue: ```drush queue:list```
 2. Delete the queue: ```drush queue:delete static_metadata_records_queue```

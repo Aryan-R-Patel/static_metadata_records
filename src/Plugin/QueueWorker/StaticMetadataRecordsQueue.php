@@ -101,10 +101,12 @@ class StaticMetadataRecordsQueue extends QueueWorkerBase {
 
             if (!empty($dc_field_name)) {
                 $raw_dc_data = $dc_extractor_object->getData($nid, $headers);
+                // echo "raw dc:" . $raw_dc_data;
             }
             
             if (!empty($mods_field_name)) {
                 $raw_mods_data = $mods_extractor_object->getData($nid, $headers);
+                // echo "raw mods:" . $raw_mods_data;
             }
 
             // null check - only fail if the configured field's data is null

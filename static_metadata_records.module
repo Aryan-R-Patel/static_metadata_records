@@ -51,11 +51,12 @@ function static_metadata_records_exclude_node($nid) {
             }
 
             if ($found_match) {
+                \Drupal::logger('static_metadata_records')->error("Node $nid skipped. Matches exclusion filters.");
                 return TRUE;
             }
         }
         else {
-            \Drupal::logger('static_metadata_records')->warning("Node $nid does not have the required field '$excluded_field_machine_name' for exclusion check. Skipping.");
+            \Drupal::logger('static_metadata_records')->error("Node $nid does not have the required field '$excluded_field_machine_name' for exclusion check. Skipping.");
             return TRUE;  // Exclude to avoid errors.
         }
     }
