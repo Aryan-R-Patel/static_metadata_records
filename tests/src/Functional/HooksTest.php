@@ -93,7 +93,7 @@ class HooksTest extends BrowserTestBase {
     ]);
 
     $queue = \Drupal::queue('static_metadata_records_queue');
-    
+
     // check whether the hook successfully added the item to our queue
     $this->assertEquals(1, $queue->numberOfItems(), 'The node was automatically added to the queue via hook_node_insert.');
     
