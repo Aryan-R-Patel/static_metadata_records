@@ -91,7 +91,11 @@ class MODSExtractor implements MetadataExtractorInterface{
         }    
 
         $length = $end_index - $start_index;
-        $refined = substr($body, $start_index + $tag_length, $length - $tag_length); 
+        $refined = trim(substr($body, $start_index + $tag_length, $length - $tag_length)); 
+
+        if (empty($refined)){
+            return '';
+        }
 
         // schema validation
         $xmlSchema = "https://www.loc.gov/standards/mods/v3/mods-3-8.xsd";
@@ -117,6 +121,13 @@ class MODSExtractor implements MetadataExtractorInterface{
         else {
             \Drupal::logger('static_metadata_records')->error("Failed to load MODS XML for validation.");
         }
+
+        // remove extra white spaces between tags
+        $dom = new \DOMDocument();
+        $dom->preserveWhiteSpace = false; // ignore extra spaces
+        $dom->loadXML($refined);
+        $dom->formatOutput = true;       // set to true because we want pretty printing for our display
+        $refined = $dom->saveXML($dom->documentElement);
         
         return $refined;
     }
