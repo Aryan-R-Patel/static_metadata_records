@@ -20,7 +20,6 @@ class DrushInputTest extends KernelTestBase {
         // installation
         $this->installEntitySchema('node');
         $this->installEntitySchema('user');
-        $this->installSchema('system', ['sequences']); // Required for NIDs to increment
 
         \Drupal\node\Entity\NodeType::create([
             'type' => 'islandora_object',

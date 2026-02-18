@@ -33,8 +33,6 @@ class ResponseValidationTest extends KernelTestBase {
 
   protected function setUp(): void {
     parent::setUp();
-    // Required for the logger and basic system services
-    $this->installSchema('system', ['sequences']);
     $this->installConfig(['system', 'static_metadata_records']);
   }
 
