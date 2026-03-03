@@ -1,0 +1,17 @@
+{
+  "name": "digitalutsc/static_metadata_records",
+  "type": "drupal-module",
+  "description": "Custom Drupal Module for fetching XML data and storing them into Plain Text (Long) fields.",
+  "keywords": [
+    "Drupal"
+  ],
+  "support": {
+    "issues": "https://github.com/digitalutsc/static_metadata_records/issues",
+    "source": "https://github.com/digitalutsc/static_metadata_records"
+  },
+  "require": {
+    "drupal/rest_oai_pmh": "^2.2",
+    "drupal/jwt": "^2.3"
+  },
+  "minimum-stability": "dev"
+}
